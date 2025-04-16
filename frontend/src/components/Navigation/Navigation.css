@@ -41,7 +41,7 @@
 @media (min-width: 768px) {
   .sidebar {
     display: flex !important;
-    width: 15%;
+    width: 8%;
     transform: translateX(0) !important;
   }
 

@@ -1,17 +1,20 @@
-import React from 'react'
+// src/components/Navigation/NavItem.jsx
 import { Link } from 'react-router-dom'
 
-function NavItem({ label, path, icon: Icon }) {
+const NavItem = ({ to, label, Icon, hasFavorites }) => {
   return (
     <Link
-      to={path}
-      className='group flex items-center transition-transform transform hover:translate-x-2 ease-in'
+      to={to}
+      className='flex relative'
     >
-      <Icon
-        size={26}
-        className='mr-2'
-      />
-      <span className='nav-item-name'>{label}</span>
+      <div className='flex items-center transition-transform transform hover:translate-x-2'>
+        <Icon
+          size={26}
+          className='mr-2 mt-[3rem]'
+        />
+        <span className='hidden nav-item-name mt-[3rem]'>{label}</span>
+      </div>
+      {hasFavorites && <></>}
     </Link>
   )
 }
