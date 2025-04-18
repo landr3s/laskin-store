@@ -6,8 +6,6 @@
   color-scheme: dark light;
 }
 
-body {
-  background: #222;
-  color: white;
-  font-family: system-ui;
+a.active {
+  background: #242424;
 }

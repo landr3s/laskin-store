@@ -1,12 +1,12 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { fetchBaseQuery, createApi } from '@reduxjs/toolkit/query/react'
 import { BASE_URL } from '../constants'
 
-const baseQuery = fetchBaseQuery({
-  baseUrl: BASE_URL
+const baseQuery = fetchBaseQuery({ baseUrl: BASE_URL })
+
+const apiSlice = createApi({
+  endpoints: () => ({}),
+  baseQuery,
+  tagTypes: ['Products', 'Cart', 'User']
 })
 
-export const apiSlice = createApi({
-  baseQuery,
-  tagTypes: ['User', 'Order', 'Product', 'Cart'],
-  endpoints: () => ({})
-})
+export default apiSlice

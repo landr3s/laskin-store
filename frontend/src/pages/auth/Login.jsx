@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router'
+import { setCredentials } from '../../redux/features/auth/loginSlice'
+import { useLoginMutation } from '../../redux/api/usersApiSlice'
 import { toast } from 'react-toastify'
-import { setCredentials } from '../../redux/features/auth/authSlice'
-import { useLoginMutation } from '../../redux/api/usersSlice'
 
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
   const { userInfo } = useSelector(state => state.auth)
-  const dispatch = useDispatch()
+  const [loginApiCall, { loading }] = useLoginMutation()
   const navigate = useNavigate()
-  const [login, { isLoading }] = useLoginMutation()
+  const dispatch = useDispatch()
+
   const search = useLocation()
   const sp = new URLSearchParams(search)
   const redirect = sp.get('redirect') ?? '/'
@@ -20,55 +22,59 @@ function Login() {
     if (userInfo) {
       navigate(redirect)
     }
-  }, [userInfo, redirect, navigate])
+  }, [navigate, userInfo, redirect])
 
   const submitHandler = async e => {
-    e.preventDefault()
     try {
-      const res = await login({ email, password }).unwrap()
+      e.preventDefault()
+      const res = await loginApiCall({ email, password }).unwrap()
       console.log(res)
+
       dispatch(setCredentials({ ...res }))
     } catch (error) {
-      toast.error(error?.data?.message || error?.message)
+      toast.error(error?.data?.message) || console.error(error.message)
     }
   }
+
   return (
-    <div className=' pl-[10rem] flex flex-wrap'>
-      <div className='mr-[4rem] mt-[5rem]'>
-        <form
-          onSubmit={submitHandler}
-          className='container w-[40rem]'
+    <form
+      onSubmit={submitHandler}
+      className='flex flex-col gap-4 p-4 items-start text-white'
+    >
+      <div className='flex flex-col gap-2'>
+        <label
+          htmlFor='email'
+          className='font-semibold'
         >
-          <div className='p-4 flex gap-4'>
-            <label htmlFor='email'>Email Address</label>
-            <input
-              type='email'
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder='Email Address'
-            />
-          </div>
-          <div className='p-4 flex gap-4'>
-            <label htmlFor='password'>Password</label>
-            <input
-              type='password'
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder='Password'
-            />
-          </div>
-          <button>Submit</button>
-          <div>
-            <p>
-              New Customer?{' '}
-              <Link to={redirect ? `redirect?${redirect}` : 'redirect'}>
-                Register
-              </Link>
-            </p>
-          </div>
-        </form>
+          Email Address
+        </label>
+        <input
+          type='email'
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder='Email Address'
+          className='border-none rounded p-2 outline-none'
+        />
       </div>
-    </div>
+      <div className='flex flex-col gap-2'>
+        <label
+          htmlFor='email'
+          className='font-semibold'
+        >
+          Password
+        </label>
+        <input
+          type='password'
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          placeholder='Password'
+          className='border-none p-2 rounded outline-none'
+        />
+      </div>
+      <button className='bg-white text-black px-4 py-1.5 rounded-full text-[15px]'>
+        Submit
+      </button>
+    </form>
   )
 }
 
