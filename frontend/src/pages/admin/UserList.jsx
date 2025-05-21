@@ -14,6 +14,8 @@ import {
 } from '@heroicons/react/24/outline'
 import { Button } from 'flowbite-react'
 import { toast } from 'react-toastify'
+import { setCredentials } from '../../redux/features/auth/authSlice'
+import { useDispatch } from 'react-redux'
 function UserList() {
   const { data: users, refetch, error, isLoading } = useGetUsersQuery()
   const [deleteApiCall] = useDeleteUserMutation()
@@ -21,6 +23,8 @@ function UserList() {
   const [editableUserId, setEditableUserId] = useState(null)
   const [editableUsername, setEditableUsername] = useState('')
   const [editableEmail, setEditableEmail] = useState('')
+
+  const dispatch = useDispatch()
 
   const toggleUpdate = (id, username, email) => {
     setEditableUserId(id)
@@ -41,11 +45,12 @@ function UserList() {
 
   const handleUpdate = async id => {
     try {
-      await updateApiCall({
+      const res = await updateApiCall({
         userId: id,
         username: editableUsername,
         email: editableEmail
       }).unwrap()
+      dispatch(setCredentials({ ...res }))
       setEditableUserId(null)
       refetch()
     } catch (error) {
